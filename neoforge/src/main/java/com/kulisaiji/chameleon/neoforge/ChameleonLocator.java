@@ -43,7 +43,7 @@ public class ChameleonLocator implements IModFileCandidateLocator {
                         return n.endsWith(".jar") || n.endsWith(".zip");
                     })
                     .collect(Collectors.toList());
-            ModDisabler.disableMods(jarPaths, patterns);
+            ModDisabler.disableMods(jarPaths, patterns, device, runtime);
         } catch (Exception e) {
             System.err.println("[Chameleon] 禁用模组失败: " + e.getMessage());
             e.printStackTrace();

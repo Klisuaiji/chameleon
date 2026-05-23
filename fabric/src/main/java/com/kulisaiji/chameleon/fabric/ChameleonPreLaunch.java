@@ -40,7 +40,7 @@ public class ChameleonPreLaunch implements PreLaunchEntrypoint {
                     return n.endsWith(".jar") || n.endsWith(".zip");
                 })
                 .collect(Collectors.toList());
-            ModDisabler.disableMods(jarPaths, patterns);
+            ModDisabler.disableMods(jarPaths, patterns, device, runtime);
         } catch (Exception e) {
             System.err.println("[Chameleon] Fabric PreLaunch 禁用失败: " + e.getMessage());
         }
