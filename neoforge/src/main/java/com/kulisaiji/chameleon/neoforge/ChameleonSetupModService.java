@@ -1,17 +1,17 @@
 package com.kulisaiji.chameleon.neoforge;
 
 import com.kulisaiji.chameleon.*;
-import settingdust.preloadingtricks.api.SetupModService;
+import settingdust.preloading_tricks.api.PreloadingEntrypoint;
 
 import java.nio.file.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ChameleonSetupModService implements SetupModService {
+public class ChameleonSetupModService implements PreloadingEntrypoint {
     @Override
-    public void setupMod() {
+    public void onPreloading() {
         System.setProperty("chameleon.preloading.done", "true");
-        // [拓展] 在极早期注入 runtime 标记，供 EnvironmentDetector 回退使用
+        // 在极早期注入 runtime 标记，供 EnvironmentDetector 回退使用
         System.setProperty("chameleon.runtime", detectSide());
 
         ConfigLoader config = new ConfigLoader();

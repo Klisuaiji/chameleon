@@ -1,15 +1,11 @@
 plugins {
     id 'java-library'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.gradleup.shadow' version '8.3.5'
 }
 
 base.archivesName = 'chameleon-common'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 configurations {
     shade
@@ -26,8 +22,6 @@ shadowJar {
     archiveClassifier.set('')
     relocate 'com.moandjiezana.toml',
               'com.kulisaiji.chameleon.shaded.com.moandjiezana.toml'
-    // Shadow plugin internal ASM also needs Java 21
-    archiveVersion.set('')
 }
 
 tasks.jar {

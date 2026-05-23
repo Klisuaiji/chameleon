@@ -1,20 +1,16 @@
 package com.kulisaiji.chameleon.neoforge;
 
 import com.kulisaiji.chameleon.*;
+import net.neoforged.neoforgespi.ILaunchContext;
 import net.neoforged.neoforgespi.locating.*;
 
 import java.nio.file.*;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class ChameleonLocator implements IModFileCandidateLocator {
-    /**
-     * [修正] NeoForge 21.1.x 的 IModFileCandidateLocator 签名。
-     * 使用 ModDiscoveryContext 获取游戏目录，直接扫描 mods 文件夹。
-     */
     @Override
-    public void findCandidates(ModDiscoveryContext context, Consumer<IModFileCandidate> candidateConsumer) {
+    public void findCandidates(ILaunchContext context, IDiscoveryPipeline pipeline) {
         // 如果 Preloading Tricks 的 SetupModService 已提前执行，则跳过
         if (System.getProperty("chameleon.preloading.done") != null) {
             return;
@@ -31,7 +27,8 @@ public class ChameleonLocator implements IModFileCandidateLocator {
         }
 
         try {
-            Path modsDir = context.getGameDirectory().resolve("mods");
+            // 使用相对路径获取 mods 目录
+            Path modsDir = Paths.get("mods");
             if (!Files.isDirectory(modsDir)) {
                 return;
             }
