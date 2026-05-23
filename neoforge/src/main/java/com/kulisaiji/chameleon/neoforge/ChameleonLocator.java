@@ -9,13 +9,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ChameleonLocator implements IModFileCandidateLocator {
+    /**
+     * NeoForge 标准 API 中最早的介入点。
+     * 在 ModDiscoverer 扫描阶段执行，此时模组元数据尚未解析。
+     * 直接扫描 mods/ 目录并移动不兼容 JAR，后续 locator 扫描到的是已清理目录。
+     */
     @Override
     public void findCandidates(ILaunchContext context, IDiscoveryPipeline pipeline) {
-        // 如果 Preloading Tricks 的 SetupModService 已提前执行，则跳过
-        if (System.getProperty("chameleon.preloading.done") != null) {
-            return;
-        }
-
         ConfigLoader config = new ConfigLoader();
         config.loadOrCreate();
 
@@ -40,7 +40,8 @@ public class ChameleonLocator implements IModFileCandidateLocator {
                     .collect(Collectors.toList());
             ModDisabler.disableMods(jarPaths, patterns);
         } catch (Exception e) {
-            System.err.println("[Chameleon] IModFileCandidateLocator 阶段禁用失败: " + e.getMessage());
+            System.err.println("[Chameleon] 禁用模组失败: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

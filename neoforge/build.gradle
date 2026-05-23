@@ -6,5 +6,5 @@ plugins {
 dependencies {
     implementation project(':common')
     implementation "net.neoforged:neoforge:21.1.85"
-    compileOnly "settingdust.preloading_tricks:PreloadingTricks:3.5.9:neoforge-modlauncher"
+    // [删除] 彻底移除 Preloading Tricks 依赖
 }

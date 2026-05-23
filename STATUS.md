@@ -4,94 +4,72 @@
 
 Chameleon 是一个多平台 Minecraft 模组禁用工具，支持 NeoForge、Fabric 和 Quilt 平台，适用于 Minecraft 1.21.1。
 
-## 已完成的工作
+## 最新进展（2025-05-23）
 
-### 1. 项目结构搭建
-- 创建了多模块 Gradle 项目结构
-- 模块包括：`common`、`neoforge`、`fabric`、`quilt`
-- 配置了根 `build.gradle` 和 `settings.gradle`
+### 已完成的修复
 
-### 2. Common 模块核心类
-- **EnvironmentDetector.java**: 环境检测，支持 Windows/Linux/macOS/Android 启动器识别
-- **ConfigLoader.java**: 配置文件加载与解析（JSON 格式）
-- **ModIDHelper.java**: 从 JAR 文件中提取 ModID，支持 NeoForge/Fabric/Quilt 格式
-- **ModDisabler.java**: 模组禁用逻辑，包含防重复处理
+1. **Shadow 插件升级成功**
+   - 从 `com.github.johnrengelman.shadow` 8.1.1 升级至 `com.gradleup.shadow` 8.3.5
+   - 该版本正式支持 Java 21 class 文件格式
+   - `common` 模块 `shadowJar` 任务构建成功，toml4j 正确重打包到 JAR 中
 
-### 3. 平台适配层
-- **NeoForge**: ChameleonLocator (IModFileCandidateLocator), ChameleonSetupModService (SetupModService)
-- **Fabric**: ChameleonPreLaunch (PreLaunchEntrypoint)
-- **Quilt**: ChameleonQuiltPreLaunch (PreLaunchEntrypoint)
+2. **Gradle 版本适配**
+   - 保持使用 Gradle 8.10（满足 NeoForge 和 Fabric 插件的兼容性要求）
+   - 环境配置：Temurin JDK 21
 
-### 4. 配置文件
-- NeoForge 的 `neoforge.mods.toml`
-- Fabric 的 `fabric.mod.json`
-- Quilt 的 `quilt.mod.json`
-- SPI 服务注册文件
+3. **NeoForge 模块部分适配**
+   - 修正 `ChameleonLocator.findCandidates()` 方法签名以匹配 NeoForge 21.1.x API：
+     - 从 `(ModDiscoveryContext, Consumer<IModFileCandidate>)` 改为 `(ILaunchContext, IDiscoveryPipeline)`
+   - 修正 `ChameleonSetupModService` 实现 `PreloadingEntrypoint` 接口的 `onPreloading()` 方法
+   - 由于 `ILaunchContext` 无 `getGameDirectory()` 方法，改用 `Paths.get("mods")` 相对路径
 
-### 5. Gradle Wrapper
-- 配置了 Gradle 8.10 wrapper
-- 创建了 `gradlew` 脚本
+### 待解决的问题
 
-## 已知问题
+#### NeoForge 模块编译
+- **ChameleonSetupModService** 实现 `PreloadingEntrypoint` 接口时，`@Override` 注解报错：
+  - `method does not override or implement a method from a supertype`
+- 原因：`PreloadingEntrypoint` 是一个空标记接口（无任何方法），`onPreloading()` 方法不存在于接口中
+- 解决方案：移除 `@Override` 注解，或确认 Preloading Tricks 的正确使用方式
 
-### Shadow 插件 ASM 版本兼容性
-- **问题描述**: Shadow 插件 8.1.1 内部使用的 ASM 版本无法处理 Java 21 (major version 65) 的 class 文件
-- **错误信息**: `Unsupported class file major version 65`
-- **影响范围**: `common` 模块的 `shadowJar` 任务无法完成，导致 toml4j 无法重打包到 common JAR 中
-- **根因分析**: Shadow 插件 8.1.1 依赖的 ASM 库版本较旧，不支持 Java 21 的 class 文件格式
+#### Fabric 模块
+- Fabric Loom 1.7 在 Gradle 8.10 下配置阶段报错 `Unsupported class file major version 65`
+- 可能需要升级 Fabric Loom 版本或检查 ASM 依赖冲突
 
-### Fabric/Quilt 模块
-- 由于 Shadow 插件问题未解决，Fabric 和 Quilt 模块尚未验证编译
-- NeoForge 模块也因 common 模块构建受阻
-
-## 环境配置
-- **Java**: Temurin JDK 21 (已安装)
-- **Gradle**: 8.10 (wrapper)
-- **Shadow 插件**: 8.1.1
-
-## 下一步建议
-1. 升级 Shadow 插件到支持 Java 21 的版本（如 8.3.x 或更高）
-2. 或者降级项目 Java 版本到 Java 17（但 Minecraft 1.21.1 要求 Java 21）
-3. 寻找替代方案，如手动重打包依赖
-4. 考虑使用 Maven 替代 Gradle 构建
+#### Quilt 模块
+- `org.quiltmc.loom` 插件在 Quilt 仓库中无法解析（404）
+- 当前 `settings.gradle` 中已移除 `quilt` 模块
 
 ## 文件清单
 
 ```
 Chameleon/
-├── build.gradle
-├── settings.gradle
-├── gradle/
-│   └── wrapper/
-│       ├── gradle-wrapper.jar
-│       └── gradle-wrapper.properties
-├── gradlew
-├── common/
-│   ├── build.gradle
+├── build.gradle                          # 根构建脚本（已修正插件引用）
+├── settings.gradle                       # 模块配置（暂不含 quilt）
+├── gradle/wrapper/                      # Gradle Wrapper 配置
+├── common/                              # 核心逻辑模块（构建成功）
+│   ├── build.gradle                      # Shadow 插件 8.3.5
 │   └── src/main/java/com/kulisaiji/chameleon/
 │       ├── EnvironmentDetector.java
 │       ├── ConfigLoader.java
 │       ├── ModIDHelper.java
 │       └── ModDisabler.java
-├── neoforge/
+├── neoforge/                            # NeoForge 适配层（编译中）
 │   ├── build.gradle
 │   └── src/main/
 │       ├── java/com/kulisaiji/chameleon/neoforge/
-│       │   ├── ChameleonLocator.java
-│       │   └── ChameleonSetupModService.java
+│       │   ├── ChameleonLocator.java      # API 签名已修正
+│       │   └── ChameleonSetupModService.java # PreloadingEntrypoint 接口待确认
 │       └── resources/META-INF/
 │           ├── neoforge.mods.toml
 │           └── services/
-│               ├── net.neoforged.neoforgespi.locating.IModFileCandidateLocator
-│               └── settingdust.preloadingtricks.api.SetupModService
-├── fabric/
+├── fabric/                              # Fabric 适配层（待修复）
 │   ├── build.gradle
 │   └── src/main/
 │       ├── java/com/kulisaiji/chameleon/fabric/
 │       │   └── ChameleonPreLaunch.java
 │       └── resources/
 │           └── fabric.mod.json
-└── quilt/
+└── quilt/                               # Quilt 适配层（暂不可用）
     ├── build.gradle
     └── src/main/
         ├── java/com/kulisaiji/chameleon/quilt/
@@ -99,3 +77,9 @@ Chameleon/
         └── resources/
             └── quilt.mod.json
 ```
+
+## 下一步建议
+
+1. **NeoForge**：确认 `PreloadingEntrypoint` 的正确实现方式，或改用其他早期介入机制
+2. **Fabric**：升级 Fabric Loom 到 1.8+ 或检查 ASM 版本冲突
+3. **Quilt**：等待 Quilt Loom 插件仓库恢复或寻找替代方案

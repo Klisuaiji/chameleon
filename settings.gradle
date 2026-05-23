@@ -8,4 +8,5 @@ pluginManagement {
 }
 
 rootProject.name = 'Chameleon'
+// [变更] 移除 quilt 独立模块，Quilt 用户直接使用 fabric 构建产物
 include 'common', 'neoforge', 'fabric'

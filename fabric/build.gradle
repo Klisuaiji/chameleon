@@ -1,11 +1,13 @@
 plugins {
     id 'java-library'
-    id 'fabric-loom' version '1.7-SNAPSHOT'
+    // [变更] 升级至 1.9-SNAPSHOT 以支持 Java 21
+    id 'fabric-loom' version '1.9-SNAPSHOT'
 }
 
 dependencies {
     implementation project(':common')
+    // [变更] 同步至最新稳定版
+    modImplementation "net.fabricmc:fabric-loader:0.16.10"
     minecraft "com.mojang:minecraft:1.21.1"
     mappings "net.fabricmc:yarn:1.21.1+build.3:v2"
-    modImplementation "net.fabricmc:fabric-loader:0.16.0"
 }
