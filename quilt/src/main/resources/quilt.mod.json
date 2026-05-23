@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "com.kulisaiji",
+    "id": "chameleon",
+    "version": "${version}",
+    "metadata": {
+      "name": "Chameleon",
+      "description": "Disable incompatible mods before loading",
+      "authors": ["kulisaiji"],
+      "contact": {},
+      "icon": "assets/chameleon/icon.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "pre_launch": "com.kulisaiji.chameleon.quilt.ChameleonQuiltPreLaunch"
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "versions": ">=0.26.0"
+      },
+      {
+        "id": "minecraft",
+        "versions": ">=1.21.1"
+      }
+    ]
+  }
+}

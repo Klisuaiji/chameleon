@@ -1,0 +1,11 @@
+plugins {
+    id 'java-library'
+    id 'org.quiltmc.loom' version '1.7-SNAPSHOT'
+}
+
+dependencies {
+    implementation project(':common')
+    minecraft "com.mojang:minecraft:1.21.1"
+    mappings "net.fabricmc:yarn:1.21.1+build.3:v2"
+    modImplementation "org.quiltmc:quilt-loader:0.26.0"
+}

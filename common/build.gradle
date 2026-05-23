@@ -1,0 +1,36 @@
+plugins {
+    id 'java-library'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+base.archivesName = 'chameleon-common'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    shade
+    implementation.extendsFrom shade
+}
+
+dependencies {
+    shade 'com.moandjiezana.toml:toml4j:0.7.2'
+    implementation 'com.google.code.gson:gson:2.10.1'
+}
+
+shadowJar {
+    configurations = [project.configurations.shade]
+    archiveClassifier.set('')
+    relocate 'com.moandjiezana.toml',
+              'com.kulisaiji.chameleon.shaded.com.moandjiezana.toml'
+    // Shadow plugin internal ASM also needs Java 21
+    archiveVersion.set('')
+}
+
+tasks.jar {
+    dependsOn shadowJar
+    enabled = false
+}

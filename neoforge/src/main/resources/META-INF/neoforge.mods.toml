@@ -1,0 +1,17 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+
+[[mods]]
+modId="chameleon"
+version="${version}"
+displayName="Chameleon"
+description="Disable incompatible mods before loading"
+authors="kulisaiji"
+
+[[dependencies.chameleon]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.0,)"
+ordering="NONE"
+side="BOTH"
