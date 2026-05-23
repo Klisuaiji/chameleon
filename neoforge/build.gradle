@@ -3,24 +3,10 @@ plugins {
     id 'architectury-plugin'
 }
 
-architectury {
-    minecraft = '1.21.1'
-}
-
-loom {
-    neoForge {
-        neoForgeVersion = '21.1.85'
-    }
-}
-
-repositories {
-    maven { url 'https://maven.neoforged.net/releases/' }
-}
-
 dependencies {
-    minecraft "net.minecraft:minecraft:1.21.1"
+    minecraft "com.mojang:minecraft:1.21.1"
     mappings loom.layered {
-        it.mappings("net.fabricmc:yarn:1.21.1+build.3:v2")
+        it.officialMojangMappings()
     }
     
     neoForge "net.neoforged:neoforge:21.1.85"
