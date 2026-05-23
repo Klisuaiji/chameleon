@@ -1,11 +1,16 @@
 package com.kulisaiji.chameleon.neoforge;
 
-import com.kulisaiji.chameleon.*;
+import com.kulisaiji.chameleon.ConfigLoader;
+import com.kulisaiji.chameleon.EnvironmentDetector;
+import com.kulisaiji.chameleon.ModDisabler;
 import net.neoforged.neoforgespi.ILaunchContext;
-import net.neoforged.neoforgespi.locating.*;
+import net.neoforged.neoforgespi.locating.IDiscoveryPipeline;
+import net.neoforged.neoforgespi.locating.IModFileCandidateLocator;
 
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ChameleonLocator implements IModFileCandidateLocator {

@@ -1,13 +1,17 @@
 package com.kulisaiji.chameleon;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConfigLoader {
     private static final Path CONFIG_PATH = Paths.get("config", "chameleon_config.json");
@@ -29,13 +33,13 @@ public class ConfigLoader {
             Files.createDirectories(CONFIG_PATH.getParent());
             JsonObject def = new JsonObject();
             JsonObject equipment = new JsonObject();
-            equipment.add("android", new com.google.gson.JsonArray());
-            equipment.add("windows", new com.google.gson.JsonArray());
-            equipment.add("linux", new com.google.gson.JsonArray());
-            equipment.add("mac", new com.google.gson.JsonArray());
+            equipment.add("android", new JsonArray());
+            equipment.add("windows", new JsonArray());
+            equipment.add("linux", new JsonArray());
+            equipment.add("mac", new JsonArray());
             JsonObject environment = new JsonObject();
-            environment.add("client", new com.google.gson.JsonArray());
-            environment.add("server", new com.google.gson.JsonArray());
+            environment.add("client", new JsonArray());
+            environment.add("server", new JsonArray());
             def.add("equipment", equipment);
             def.add("environment", environment);
             Files.write(CONFIG_PATH, new Gson().toJson(def).getBytes());

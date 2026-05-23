@@ -1,12 +1,15 @@
 package com.kulisaiji.chameleon;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.moandjiezana.toml.Toml;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.util.jar.*;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
 public class ModIDHelper {

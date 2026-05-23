@@ -1,10 +1,13 @@
 package com.kulisaiji.chameleon.fabric;
 
-import com.kulisaiji.chameleon.*;
+import com.kulisaiji.chameleon.ConfigLoader;
+import com.kulisaiji.chameleon.EnvironmentDetector;
+import com.kulisaiji.chameleon.ModDisabler;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
