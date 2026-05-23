@@ -1,23 +1,29 @@
 plugins {
-    id 'java-library'
-    id 'net.neoforged.gradle.userdev' version '7.0.144'
+    id 'dev.architectury.loom'
+    id 'architectury-plugin'
+}
+
+architectury {
+    minecraft = '1.21.1'
+}
+
+loom {
+    neoForge {
+        neoForgeVersion = '21.1.85'
+    }
 }
 
 repositories {
-    mavenCentral()
     maven { url 'https://maven.neoforged.net/releases/' }
 }
 
 dependencies {
-    implementation project(':common')
-    implementation "net.neoforged:neoforge:21.1.85"
-}
-
-tasks.jar {
-    manifest {
-        attributes(['Specification-Title': 'Chameleon NeoForge',
-                    'Specification-Version': "${project.version}".replaceFirst('\\+.*', ''),
-                    'Implementation-Title': 'Chameleon NeoForge',
-                    'Implementation-Version': "${project.version}".replaceFirst('\\+.*', '')])
+    minecraft "net.minecraft:minecraft:1.21.1"
+    mappings loom.layered {
+        it.mappings("net.fabricmc:yarn:1.21.1+build.3:v2")
     }
+    
+    neoForge "net.neoforged:neoforge:21.1.85"
+    
+    implementation project(':common')
 }

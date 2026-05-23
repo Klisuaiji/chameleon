@@ -1,13 +1,19 @@
 plugins {
-    id 'java-library'
-    // [变更] 升级至 1.9-SNAPSHOT 以支持 Java 21
-    id 'fabric-loom' version '1.9-SNAPSHOT'
+    id 'dev.architectury.loom'
+    id 'architectury-plugin'
+}
+
+architectury {
+    minecraft = '1.21.1'
 }
 
 dependencies {
-    implementation project(':common')
-    // [变更] 同步至最新稳定版
+    minecraft "net.minecraft:minecraft:1.21.1"
+    mappings loom.layered {
+        it.mappings("net.fabricmc:yarn:1.21.1+build.3:v2")
+    }
+    
     modImplementation "net.fabricmc:fabric-loader:0.16.10"
-    minecraft "com.mojang:minecraft:1.21.1"
-    mappings "net.fabricmc:yarn:1.21.1+build.3:v2"
+    
+    implementation project(':common')
 }

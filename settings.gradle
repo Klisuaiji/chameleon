@@ -3,10 +3,10 @@ pluginManagement {
         gradlePluginPortal()
         maven { url 'https://maven.neoforged.net/releases/' }
         maven { url 'https://maven.fabricmc.net/' }
-        maven { url 'https://maven.quiltmc.org/repository/release/' }
+        maven { url 'https://maven.architectury.dev/' }
+        maven { url 'https://maven.minecraftforge.net/' }
     }
 }
 
 rootProject.name = 'Chameleon'
-// [变更] 移除 quilt 独立模块，Quilt 用户直接使用 fabric 构建产物
 include 'common', 'neoforge', 'fabric'
