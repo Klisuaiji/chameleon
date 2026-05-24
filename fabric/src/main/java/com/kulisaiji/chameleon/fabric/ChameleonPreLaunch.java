@@ -4,6 +4,7 @@ import com.kulisaiji.chameleon.ConfigLoader;
 import com.kulisaiji.chameleon.EnvironmentDetector;
 import com.kulisaiji.chameleon.Logger;
 import com.kulisaiji.chameleon.ModDisabler;
+import com.kulisaiji.chameleon.VersionMatcher;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 

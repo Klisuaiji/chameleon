@@ -4,6 +4,7 @@ import com.kulisaiji.chameleon.ConfigLoader;
 import com.kulisaiji.chameleon.EnvironmentDetector;
 import com.kulisaiji.chameleon.Logger;
 import com.kulisaiji.chameleon.ModDisabler;
+import com.kulisaiji.chameleon.VersionMatcher;
 import net.neoforged.neoforgespi.ILaunchContext;
 import net.neoforged.neoforgespi.locating.IDiscoveryPipeline;
 import net.neoforged.neoforgespi.locating.IModFileCandidateLocator;
