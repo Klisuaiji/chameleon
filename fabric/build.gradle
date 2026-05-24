@@ -1,6 +1,7 @@
 plugins {
     id 'dev.architectury.loom'
     id 'architectury-plugin'
+    id 'com.gradleup.shadow'
 }
 
 architectury {
@@ -16,4 +17,34 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:0.16.10"
     
     implementation project(':common')
+}
+
+// 配置 shadowJar 包含 common 模块
+shadowJar {
+    // 包含 common 模块的输出
+    from project(':common').tasks.shadowJar.outputs
+    
+    // 排除 Fabric 和 Minecraft 相关库（由运行时提供）
+    exclude 'net/fabricmc/**'
+    exclude 'net/minecraft/**'
+    exclude 'com/mojang/**'
+    exclude 'org/slf4j/**'
+    exclude 'org/apache/logging/**'
+    
+    // 重命名 shaded 包
+    relocate 'com.moandjiezana.toml', 'com.kulisaiji.chameleon.shaded.com.moandjiezana.toml'
+    
+    archiveClassifier.set('')
+}
+
+// 让 jar 任务依赖 shadowJar
+tasks.jar {
+    dependsOn shadowJar
+    enabled = false
+}
+
+// 让 remapJar 使用 shadowJar 的输出
+tasks.remapJar {
+    dependsOn shadowJar
+    inputFile.set(tasks.shadowJar.archiveFile)
 }

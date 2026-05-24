@@ -36,9 +36,11 @@ public class ChameleonLocator implements IModFileCandidateLocator {
         
         // 4. 获取禁用规则
         List<String> patterns = config.getDisablePatterns(device, runtime);
+        List<ConfigLoader.PatternRule> regexPatterns = config.getRegexPatterns();
+        List<VersionMatcher.VersionConstraint> versionConstraints = config.getVersionConstraints();
         
         // 5. 执行模组禁用
-        if (!patterns.isEmpty()) {
+        if (!patterns.isEmpty() || !regexPatterns.isEmpty() || !versionConstraints.isEmpty()) {
             try {
                 Path modsDir = Paths.get("mods");
                 if (!Files.isDirectory(modsDir)) {
