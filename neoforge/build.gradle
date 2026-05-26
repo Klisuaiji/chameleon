@@ -15,9 +15,12 @@ dependencies {
     implementation project(':common')
 }
 
-// 配置 shadowJar 包含 common 模块
+// 配置 shadowJar：在 remapJar 之后运行，打包 common 模块
 shadowJar {
-    // 包含 common 模块的输出
+    // 使用 remapJar 的输出作为输入
+    from zipTree(tasks.remapJar.archiveFile)
+    
+    // 包含 common 模块的输出（shadowJar 已经包含了 shaded 依赖）
     from project(':common').tasks.shadowJar.outputs
     
     // 排除 NeoForge 和 Minecraft 相关库（由运行时提供）
@@ -31,16 +34,12 @@ shadowJar {
     relocate 'com.moandjiezana.toml', 'com.kulisaiji.chameleon.shaded.com.moandjiezana.toml'
     
     archiveClassifier.set('')
+    
+    // 依赖 remapJar
+    dependsOn tasks.remapJar
 }
 
-// 让 jar 任务依赖 shadowJar
-tasks.jar {
-    dependsOn shadowJar
-    enabled = false
-}
-
-// 让 remapJar 使用 shadowJar 的输出
-tasks.remapJar {
-    dependsOn shadowJar
-    inputFile.set(tasks.shadowJar.archiveFile)
+// shadowJar 任务替代最终的 jar 输出
+tasks.assemble {
+    dependsOn tasks.shadowJar
 }
