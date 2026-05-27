@@ -19,26 +19,31 @@ dependencies {
     implementation project(':common')
 }
 
-// 配置 shadowJar：在 remapJar 之后运行，打包 common 模块
+// 标准 Architectury + Shadow 配置
 shadowJar {
-    dependsOn remapJar
-    doFirst {
-        from { zipTree(remapJar.archiveFile.get().asFile) }
-    }
-    // 包含 common 模块的输出（shadowJar 已经包含了 shaded 依赖）
-    from project(':common').tasks.shadowJar.outputs
-    // 排除 Fabric 和 Minecraft 相关库（由运行时提供）
+    configurations = [project.configurations.runtimeClasspath]
+
+    archiveClassifier.set('dev-shadow')
+
+    // 打包 common 模块
+    from project(':common').sourceSets.main.output
+
+    // 排除运行时提供的库
     exclude 'net/fabricmc/**'
     exclude 'net/minecraft/**'
     exclude 'com/mojang/**'
     exclude 'org/slf4j/**'
     exclude 'org/apache/logging/**'
-    // 重命名 shaded 包
+
     relocate 'com.moandjiezana.toml', 'com.kulisaiji.chameleon.shaded.com.moandjiezana.toml'
+}
+
+remapJar {
+    inputFile.set(tasks.shadowJar.archiveFile)
+    dependsOn tasks.shadowJar
     archiveClassifier.set('')
 }
 
-// shadowJar 任务替代最终的 jar 输出
-tasks.assemble {
-    dependsOn tasks.shadowJar
+tasks.build {
+    dependsOn tasks.remapJar
 }
