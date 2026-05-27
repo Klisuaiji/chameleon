@@ -13,34 +13,29 @@ dependencies {
     mappings loom.layered {
         it.mappings("net.fabricmc:yarn:1.21.1+build.3:v2")
     }
-    
+
     modImplementation "net.fabricmc:fabric-loader:0.16.10"
-    
+
     implementation project(':common')
 }
 
 // 配置 shadowJar：在 remapJar 之后运行，打包 common 模块
 shadowJar {
-    // 使用 remapJar 的输出作为输入
-    from zipTree(tasks.remapJar.archiveFile)
-    
+    dependsOn remapJar
+    doFirst {
+        from zipTree(remapJar.archiveFile)
+    }
     // 包含 common 模块的输出（shadowJar 已经包含了 shaded 依赖）
     from project(':common').tasks.shadowJar.outputs
-    
     // 排除 Fabric 和 Minecraft 相关库（由运行时提供）
     exclude 'net/fabricmc/**'
     exclude 'net/minecraft/**'
     exclude 'com/mojang/**'
     exclude 'org/slf4j/**'
     exclude 'org/apache/logging/**'
-    
     // 重命名 shaded 包
     relocate 'com.moandjiezana.toml', 'com.kulisaiji.chameleon.shaded.com.moandjiezana.toml'
-    
     archiveClassifier.set('')
-    
-    // 依赖 remapJar
-    dependsOn tasks.remapJar
 }
 
 // shadowJar 任务替代最终的 jar 输出
