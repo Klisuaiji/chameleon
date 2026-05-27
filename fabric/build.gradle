@@ -8,6 +8,15 @@ architectury {
     minecraft = '1.21.1'
 }
 
+configurations {
+    common
+    shadowCommon
+
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+}
+
 dependencies {
     minecraft "net.minecraft:minecraft:1.21.1"
     mappings loom.layered {
@@ -16,34 +25,25 @@ dependencies {
 
     modImplementation "net.fabricmc:fabric-loader:0.16.10"
 
-    implementation project(':common')
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowCommon(project(path: ':common', configuration: 'transformProductionFabric')) { transitive false }
 }
 
-// 标准 Architectury + Shadow 配置
 shadowJar {
-    configurations = [project.configurations.runtimeClasspath]
-
+    configurations = [project.configurations.shadowCommon]
     archiveClassifier.set('dev-shadow')
-
-    // 打包 common 模块
-    from project(':common').sourceSets.main.output
-
-    // 排除运行时提供的库
-    exclude 'net/fabricmc/**'
-    exclude 'net/minecraft/**'
-    exclude 'com/mojang/**'
-    exclude 'org/slf4j/**'
-    exclude 'org/apache/logging/**'
-
-    relocate 'com.moandjiezana.toml', 'com.kulisaiji.chameleon.shaded.com.moandjiezana.toml'
 }
 
 remapJar {
-    inputFile.set(tasks.shadowJar.archiveFile)
-    dependsOn tasks.shadowJar
+    inputFile.set(shadowJar.archiveFile)
+    dependsOn shadowJar
     archiveClassifier.set('')
 }
 
+jar {
+    archiveClassifier.set('dev')
+}
+
 tasks.build {
-    dependsOn tasks.remapJar
+    dependsOn remapJar
 }
