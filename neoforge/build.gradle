@@ -9,37 +9,38 @@ dependencies {
     mappings loom.layered {
         it.officialMojangMappings()
     }
-    
+
     neoForge "net.neoforged:neoforge:21.1.85"
-    
+
     implementation project(':common')
 }
 
-// 配置 shadowJar：在 remapJar 之后运行，打包 common 模块
+// 标准 Architectury + Shadow 配置
+// 先构建 shadowJar，再 remap 成最终 NeoForge jar
 shadowJar {
-    // 使用 remapJar 的输出作为输入
-    from zipTree(tasks.remapJar.archiveFile)
-    
-    // 包含 common 模块的输出（shadowJar 已经包含了 shaded 依赖）
-    from project(':common').tasks.shadowJar.outputs
-    
-    // 排除 NeoForge 和 Minecraft 相关库（由运行时提供）
+    configurations = [project.configurations.runtimeClasspath]
+
+    archiveClassifier.set('dev-shadow')
+
+    // 打包 common 模块
+    from project(':common').sourceSets.main.output
+
+    // 排除运行时提供的库
     exclude 'net/neoforged/**'
     exclude 'net/minecraft/**'
     exclude 'com/mojang/**'
     exclude 'org/slf4j/**'
     exclude 'org/apache/logging/**'
-    
-    // 重命名 shaded 包
+
     relocate 'com.moandjiezana.toml', 'com.kulisaiji.chameleon.shaded.com.moandjiezana.toml'
-    
-    archiveClassifier.set('')
-    
-    // 依赖 remapJar
-    dependsOn tasks.remapJar
 }
 
-// shadowJar 任务替代最终的 jar 输出
-tasks.assemble {
+remapJar {
+    inputFile.set(tasks.shadowJar.archiveFile)
     dependsOn tasks.shadowJar
+    archiveClassifier.set('')
+}
+
+tasks.build {
+    dependsOn tasks.remapJar
 }
