@@ -1,48 +1,47 @@
-name: Build
+name: Build Mod
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [ main, dev, "1.21.1" ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        loader: [fabric, neoforge]
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        java-version: '21'
-        distribution: 'temurin'
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: false
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
-      with:
-        gradle-home-cache-cleanup: true
+      - name: Build ${{ matrix.loader }}
+        run: ./gradlew ${{ matrix.loader }}:build --no-daemon
 
-    - name: Clean build directories
-      run: ./gradlew clean --no-daemon
-      env:
-        GRADLE_OPTS: "-Xmx4g -XX:MaxMetaspaceSize=512m"
+      - name: Upload artifacts (Fabric)
+        if: ${{ matrix.loader == 'fabric' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: Fabric-Artifacts
+          path: fabric/build/libs/*.jar
 
-    - name: Build with Gradle
-      run: ./gradlew build --no-daemon --stacktrace
-      env:
-        GONOSUMDB: '*'
-        GRADLE_OPTS: "-Xmx4g -XX:MaxMetaspaceSize=512m"
-
-    - name: Upload Fabric artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: chameleon-fabric
-        path: fabric/build/libs/*.jar
-
-    - name: Upload NeoForge artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: chameleon-neoforge
-        path: neoforge/build/libs/*.jar
+      - name: Upload artifacts (NeoForge)
+        if: ${{ matrix.loader == 'neoforge' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: NeoForge-Artifacts
+          path: neoforge/build/libs/*.jar
