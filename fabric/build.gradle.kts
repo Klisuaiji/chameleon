@@ -25,9 +25,11 @@ configurations {
 
 dependencies {
     minecraft("net.minecraft:minecraft:1.21.1")
-    mappings(loom.layered {
-        it.officialMojangMappings()
-    })
+    loom {
+        mappings {
+            officialMojangMappings()
+        }
+    }
 
     modImplementation("net.fabricmc:fabric-loader:0.16.10")
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.102.0+1.21.1")

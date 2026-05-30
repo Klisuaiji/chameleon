@@ -17,9 +17,11 @@ configurations {
 
 dependencies {
     minecraft("com.mojang:minecraft:1.21.1")
-    mappings(loom.layered {
-        it.officialMojangMappings()
-    })
+    loom {
+        mappings {
+            officialMojangMappings()
+        }
+    }
     
     modImplementation("dev.architectury:architectury:13.0.6")
     "shade"("com.moandjiezana.toml:toml4j:0.7.2")
