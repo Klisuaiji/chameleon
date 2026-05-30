@@ -18,7 +18,7 @@ configurations {
 dependencies {
     minecraft("com.mojang:minecraft:1.21.1")
     mappings(loom.layered {
-        it.mappings("net.fabricmc:yarn:1.21.1+build.3:v2")
+        it.officialMojangMappings()
     })
     
     modImplementation("dev.architectury:architectury:13.0.6")
