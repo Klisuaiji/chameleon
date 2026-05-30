@@ -4,6 +4,7 @@ plugins {
     id("dev.architectury.loom") version "1.10-SNAPSHOT" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT" apply false
     id("com.gradleup.shadow") version "8.3.6" apply false
+    id("base") apply false
 }
 
 allprojects {
@@ -13,10 +14,11 @@ allprojects {
 
 subprojects {
     apply(plugin = "java-library")
+    apply(plugin = "base")
     apply(plugin = "architectury-plugin")
     apply(plugin = "maven-publish")
 
-    base {
+    extensions.configure<org.gradle.api.plugins.BasePluginExtension> {
         archivesName.set("chameleon-${project.name}")
     }
 
@@ -27,7 +29,7 @@ subprojects {
         maven("https://maven.architectury.dev/")
     }
 
-    java {
+    extensions.configure<JavaPluginExtension> {
         withSourcesJar()
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
@@ -38,10 +40,10 @@ subprojects {
         options.release.set(21)
     }
 
-    publishing {
+    extensions.configure<PublishingExtension> {
         publications {
             create<MavenPublication>("mavenJava") {
-                artifactId = base.archivesName.get()
+                artifactId = extensions.getByType<org.gradle.api.plugins.BasePluginExtension>().archivesName.get()
                 from(components["java"])
             }
         }
@@ -62,7 +64,7 @@ project(":common") {
     }
 
     tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
-        configurations = setOf(shade)
+        configurations = listOf(shade)
         archiveClassifier.set("")
         relocate("com.moandjiezana.toml", "com.kulisaiji.chameleon.shaded.com.moandjiezana.toml")
     }
