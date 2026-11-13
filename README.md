@@ -1,4 +1,4 @@
-# Chameleon
+# Chameleon/ALR*
 
 A multi-platform mod disabler for Minecraft 1.21.1 (NeoForge / Fabric / Quilt).
 
